@@ -1,7 +1,10 @@
 #Python
-.pyc
+*.pyc
 __pycache__
 
 #Venv
 venv
 env
+
+#Log
+*.log
