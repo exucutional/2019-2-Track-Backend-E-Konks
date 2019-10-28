@@ -8,3 +8,6 @@ env
 
 #Log
 *.log
+
+#VS code
+*.code-workspace
