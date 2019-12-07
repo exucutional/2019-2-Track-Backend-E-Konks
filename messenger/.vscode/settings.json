@@ -2,5 +2,9 @@
     "python.pythonPath": "/home/exucutional/Projects/TechnoTrack/2019-2-Track-Backend-E-Konks/venv/bin/python",
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
-    "python.linting.flake8Enabled": false
+    "python.linting.flake8Enabled": false,
+    "python.linting.pylintArgs": [
+        "--disable=C0111", // missing docstring
+        "--load-plugins=pylint_django,pylint_celery",
+    ],
 }

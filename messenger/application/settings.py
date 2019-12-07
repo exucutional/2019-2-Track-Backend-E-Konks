@@ -37,8 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'genre',
-    'movie',
+    'chats',
+    'users',
+    'upload',
+    'messages.apps.MessagesConfig',
+    'channels',
+    'django_eventstream',
+    'corsheaders',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +55,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_grip.GripMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'application.urls'
@@ -64,13 +73,23 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'application.wsgi.application'
+ASGI_APPLICATION = 'application.routing.application'
 
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+]
+
+EVENTSTREAM_ALLOW_ORIGIN = 'http://localhost:3000'
+EVENTSTREAM_ALLOW_CREDENTIALS = True
+
+AUTH_USER_MODEL = 'users.User'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -86,8 +105,8 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ex_db',
-        'USER': 'ex',
+        'NAME': 'chat_db',
+        'USER': 'chat',
         'PASSWORD': '123',
         'HOST': '127.0.0.1',
         'PORT': '5432',
@@ -112,11 +131,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.vk.VKOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'Ru-ru'
 
 TIME_ZONE = 'UTC'
 
@@ -126,11 +149,34 @@ USE_L10N = True
 
 USE_TZ = True
 
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE  = 'django.core.files.storage.FileSystemStorage'
+
+AWS_S3_ENPOINT_URL = 'http://hb.bizmrg.com'
+# AWS_ACCESS_KEY_ID = 'teEeQRVJMNFer8t67DASFH'
+# AWS_SECRET_ACCESS_KEY = '2AYvLtuHjs7D3VfksM2dcfiAwwPZvLTLFeiZz2TibaJA'
+AWS_ACCESS_KEY_ID = 'eQ4SSsB5ijn56nEMPooRyQ'
+AWS_SECRET_ACCESS_KEY = '6CSBjf6o3s28FPmL11yb1Y6UQrqG87gz6tPbzvUd2AWC'
+AWS_STORAGE_BUCKET_NAME = 'track-konks'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_URL = 'logout'
+LOGOUT_REDIRECT_URL = 'login'
+
+SOCIAL_AUTH_VK_OAUTH2_KEY = '7234852'
+SOCIAL_AUTH_VK_OAUTH2_SECRET = 'JsOIw2LMSYMZ6yMVmbnT'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+] 
+
+MEDIA_URL = '/media/'
 
 try: 
     from .local_settings import * 

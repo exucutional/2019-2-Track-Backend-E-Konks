@@ -16,10 +16,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
+from chats.views import index
+from django.contrib.auth import views as auth_views
+from chats.views import home
+from chats.views import login
 
 urlpatterns = [
+    path('', index, name='index'),
+    path('home/', home, name='home'),
     path('admin/', admin.site.urls),
     path('chats/', include('chats.urls')),
     path('users/', include('users.urls')),
     path('messages/', include('messages.urls')), 
+    path('upload/', include('upload.urls')),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('login/', login, name='login'),
+    path('social_auth/', include('social_django.urls', namespace='social')),
 ]
