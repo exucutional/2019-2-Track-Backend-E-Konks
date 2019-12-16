@@ -28,7 +28,7 @@ def message(request, message_id):
 
 def messages_list(request):
     if request.method == 'GET':
-        messages = list(Message.objects.values('id', 'chat_id', 'user_id', 'content'))
+        messages = list(Message.objects.values('id', 'chat_id', 'user_id', 'added_at', 'content'))
         try:
             for message in messages:
                 user = User.objects.get(id = message['user_id'])
@@ -45,6 +45,7 @@ def messages_list(request):
 
 @csrf_exempt
 def message_create(request):
+    print(request.POST)
     if request.method == 'POST':
         form = MessagePostForm(request.POST)
         if form.is_valid():
