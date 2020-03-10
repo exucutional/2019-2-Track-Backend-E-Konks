@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_eventstream',
     'corsheaders',
     'social_django',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -159,13 +160,33 @@ AWS_ACCESS_KEY_ID = 'eQ4SSsB5ijn56nEMPooRyQ'
 AWS_SECRET_ACCESS_KEY = '6CSBjf6o3s28FPmL11yb1Y6UQrqG87gz6tPbzvUd2AWC'
 AWS_STORAGE_BUCKET_NAME = 'track-konks'
 
+SOCIAL_AUTH_DEFAULT_USERNAME = 'root'
+SOCIAL_AUTH_CREATE_USERS = True
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.social_auth.associate_by_email',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
+
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
+# LOGIN_REDIRECT_URL = 'http://localhost:3000/'
 LOGOUT_URL = 'logout'
 LOGOUT_REDIRECT_URL = 'login'
 
 SOCIAL_AUTH_VK_OAUTH2_KEY = '7234852'
 SOCIAL_AUTH_VK_OAUTH2_SECRET = 'JsOIw2LMSYMZ6yMVmbnT'
+SOCIAL_AUTH_VK_OAUTH2_SCOPE = [
+    'email'
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/

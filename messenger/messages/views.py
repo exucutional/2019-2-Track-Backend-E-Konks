@@ -6,9 +6,14 @@ from messages.models import Message
 from users.models import User
 from messages.forms import MessagePostForm
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from django_eventstream import send_event
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
+from messages.serializers import MessageSerializer
 # Create your views here.
 
+@login_required
 def message(request, message_id):
     if request.method == 'GET':
         try:
@@ -17,7 +22,7 @@ def message(request, message_id):
             return JsonResponse({
                 'id': message.id,
                 'user_id': message.user_id,
-                'username': user,
+                'username': user.username,
                 'content': message.content,
             })
         except Message.DoesNotExist:
@@ -26,6 +31,7 @@ def message(request, message_id):
             raise Http404
     return HttpResponseNotAllowed(['GET'])
 
+@login_required
 def messages_list(request):
     if request.method == 'GET':
         messages = list(Message.objects.values('id', 'chat_id', 'user_id', 'added_at', 'content'))
@@ -36,24 +42,29 @@ def messages_list(request):
         except User.DoesNotExist:
             raise Http404
         response = JsonResponse({'messages': messages})
-        response["Access-Control-Allow-Origin"] = "*"
-        response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
-        response["Access-Control-Max-Age"] = "1000"
-        response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
         return response
     return HttpResponseNotAllowed(['GET'])
 
+
+def send_new_message_event():
+    send_event('test', 'message', {'event': 'new message'})
+
+@login_required
 @csrf_exempt
 def message_create(request):
-    print(request.POST)
     if request.method == 'POST':
         form = MessagePostForm(request.POST)
         if form.is_valid():
             message = form.save()
-            send_event('test', 'message', {'event': 'new message'})
+            send_new_message_event()
             return JsonResponse({
                 'msg': 'Сообщение сохранено',
                 'id': message.id
             })
         return JsonResponse({'errors': form.errors}, status=400)
     return HttpResponseNotAllowed(['POST'])
+
+class MessageViewSet(ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+    permission_classes = [IsAuthenticated]

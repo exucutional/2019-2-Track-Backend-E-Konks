@@ -7,6 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def upload_file(request):
+    pass
+    '''
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -16,3 +18,4 @@ def upload_file(request):
             })
         return JsonResponse({'errors': form.errors}, status=400)
     return HttpResponseNotAllowed(['POST'])
+    '''

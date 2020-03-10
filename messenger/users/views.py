@@ -5,8 +5,13 @@ from django.http import HttpResponseNotFound
 from django.http import Http404
 from users.models import User
 from messages.models import Message
+from django.contrib.auth.decorators import login_required
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
+from users.serializers import UserSerializer
 # Create your views here.
 
+@login_required
 def user_detail(request, user_id):
     if request.method == 'GET':
         try:
@@ -19,19 +24,21 @@ def user_detail(request, user_id):
                 'email': user.email,
                 'bio': user.bio
             })
-            response["Access-Control-Allow-Origin"] = "*"
-            response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
-            response["Access-Control-Max-Age"] = "1000"
-            response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
             return response
         except User.DoesNotExist:
             raise Http404
     return HttpResponseNotAllowed(['GET'])
 
-
+@login_required
 def user_search(request):
     if request.method == 'GET':
         users = User.objects.filter(username__contains=request.GET.get('username'))
         return JsonResponse({
             'data': list(users.values('id', 'first_name', 'last_name', 'username'))
         })
+
+
+class UserViewSet(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
