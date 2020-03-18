@@ -9,8 +9,10 @@ from django.contrib.auth.decorators import login_required
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from users.serializers import UserSerializer
+from django.views.decorators.cache import cache_page
 # Create your views here.
 
+@cache_page(60)
 @login_required
 def user_detail(request, user_id):
     if request.method == 'GET':
@@ -29,6 +31,7 @@ def user_detail(request, user_id):
             raise Http404
     return HttpResponseNotAllowed(['GET'])
 
+@cache_page(60)
 @login_required
 def user_search(request):
     if request.method == 'GET':

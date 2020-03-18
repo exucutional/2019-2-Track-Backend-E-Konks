@@ -15,6 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from chats.serializers import ChatSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.views.decorators.cache import cache_page
 # Create your views here.
 
 def index(request):
@@ -32,6 +33,7 @@ def home(request):
     return render(request, 'home.html') 
 
 
+@cache_page(60)
 @login_required
 def chat_detail(request, chat_id):
     if request.method == 'GET':
@@ -46,6 +48,7 @@ def chat_detail(request, chat_id):
     return HttpResponseNotAllowed(['GET'])
 
 
+@cache_page(60)
 @login_required
 def chat_list(request):
     if request.method == 'GET':
@@ -54,6 +57,7 @@ def chat_list(request):
     return HttpResponseNotAllowed(['GET'])
 
 
+@cache_page(60)
 @login_required
 def chat_messages_list(request, chat_id):
     if request.method == 'GET':

@@ -11,8 +11,10 @@ from django_eventstream import send_event
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from messages.serializers import MessageSerializer
+from django.views.decorators.cache import cache_page
 # Create your views here.
 
+@cache_page(60)
 @login_required
 def message(request, message_id):
     if request.method == 'GET':

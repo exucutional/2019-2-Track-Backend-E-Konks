@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django_eventstream',
     'corsheaders',
     'social_django',
-    'rest_framework'
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -108,7 +108,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'chat_db',
         'USER': 'chat',
-        'PASSWORD': '123',
+        'PASSWORD': '123',  
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
@@ -136,6 +136,15 @@ AUTHENTICATION_BACKENDS = [
     'social_core.backends.vk.VKOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+
+CACHES = {
+    'default': {
+        'BACKEND':
+'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
