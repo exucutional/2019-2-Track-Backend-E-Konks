@@ -16,6 +16,7 @@ from chats.serializers import ChatSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.views.decorators.cache import cache_page
+from chats.forms import FormWithCaptcha
 # Create your views here.
 
 def index(request):
@@ -25,7 +26,8 @@ def index(request):
 
 
 def login(request):
-    return render(request, 'login.html')
+    form = FormWithCaptcha()
+    return render(request, 'login.html', {'form': form})
 
 
 @login_required
@@ -68,7 +70,6 @@ def chat_messages_list(request, chat_id):
 
 
 @login_required
-@csrf_exempt
 def chat_create(request):
     if request.method == 'POST':
         form = ChatForm(request.POST)
