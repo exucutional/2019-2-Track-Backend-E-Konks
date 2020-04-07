@@ -22,6 +22,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '6eo^y75c=f)b+@e3343-$6ow2x=%rn5f30^8@2cdnp6n=2v&l-'
 
+RECAPTCHA_PUBLIC_KEY = '6LcRpOMUAAAAAHPpcbgQRBmBMqE01YSmj559JoON'
+RECAPTCHA_PRIVATE_KEY = '6LcRpOMUAAAAAGAt6pcsDakaOf9lR1CvYTci8OuC'
+NOCAPTCHA = True
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -46,13 +50,14 @@ INSTALLED_APPS = [
     'corsheaders',
     'social_django',
     'rest_framework',
+    'captcha',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -197,6 +202,13 @@ SOCIAL_AUTH_VK_OAUTH2_SCOPE = [
     'email'
 ]
 
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'konks.em@phystech.edu'
+EMAIL_HOST_PASSWORD = 'mksrvuqvsityuxpm'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
@@ -207,6 +219,12 @@ STATICFILES_DIRS = [
 ] 
 
 MEDIA_URL = '/media/'
+
+CELERY_BROKER_URL = 'redis://localhost:6379'  
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'  
+CELERY_ACCEPT_CONTENT = ['application/json']  
+CELERY_RESULT_SERIALIZER = 'json'  
+CELERY_TASK_SERIALIZER = 'json' 
 
 try: 
     from .local_settings import * 

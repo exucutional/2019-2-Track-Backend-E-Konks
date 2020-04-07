@@ -5,9 +5,10 @@ from django.http import HttpResponseNotFound
 from django.http import Http404
 from django import forms
 from chats.models import Chat
+from chats.models import Member
 from chats.forms import ChatForm
 from messages.models import Message
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
 from users.models import User
 from rest_framework.viewsets import ModelViewSet
@@ -16,6 +17,8 @@ from chats.serializers import ChatSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.views.decorators.cache import cache_page
+from chats.forms import FormWithCaptcha
+from chats.tasks import send_email
 # Create your views here.
 
 def index(request):
@@ -25,7 +28,8 @@ def index(request):
 
 
 def login(request):
-    return render(request, 'login.html')
+    form = FormWithCaptcha()
+    return render(request, 'login.html', {'form': form})
 
 
 @login_required
@@ -66,21 +70,42 @@ def chat_messages_list(request, chat_id):
         return JsonResponse({'messages': messages_list})
     return HttpResponseNotAllowed(['GET'])
 
-
 @login_required
-@csrf_exempt
+@csrf_protect
 def chat_create(request):
     if request.method == 'POST':
         form = ChatForm(request.POST)
         if form.is_valid():
             chat = form.save()
             return JsonResponse({
-                'msg': 'Пост сохранен',
+                'msg': 'Чат сохранен',
                 'id': chat.id
             })
         return JsonResponse({'errors': form.errors}, status=400)
     return HttpResponseNotAllowed(['POST'])
 
+@csrf_protect
+def chat_personal_create(request):
+    if request.method == 'POST':
+        chatForm = ChatForm(request.POST)
+        if chatForm.is_valid():
+            try:
+                user1 = User.objects.get(id=request.POST['user1'])
+                user2 = User.objects.get(id=request.POST['user2'])
+                chat = chatForm.save()
+                member1 = Member(chat=chat, user=user1)
+                member2 = Member(chat=chat, user=user2)
+                member1.save()
+                member2.save()
+                send_email.delay([user1.email, user2.email])
+                return JsonResponse({
+                    'msg': 'Чат сохранен',
+                    'id': chat.id
+                })
+            except User.DoesNotExist:
+                raise Http404
+        return JsonResponse({'errors': chatForm.errors}, status=400)
+    return HttpResponseNotAllowed(['POST'])
 
 class ChatViewSet(ModelViewSet):
     queryset = Chat.objects.all()

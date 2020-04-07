@@ -1,13 +1,23 @@
 {% extends 'base.html' %}
 {% block title %} Sign in {% endblock %}
 {% block content %}
+<script type="text/javascript" defer async>
+    function recaptchaCallback(resp) {
+        document.getElementById("recaptcha-submit").disabled = false;
+    }
+    function recaptchaExpiredCallback(resp) { 
+        document.getElementById("recaptcha-submit").disabled = true; 
+    };
+</script>
 <div class="row">
     <div class="row">
         <div class="col-md-8 mx-auto social-container my-2 order-md-1">
-            <button class="btn btn-primary mb-2">
-                <a href="{% url 'social:begin' 'vk-oauth2' %}">Login with VK</a>
-            </button>
+            <form action="{% url 'social:begin' 'vk-oauth2' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button disabled type="submit" class="btn btn-primary mb-2" id="recaptcha-submit">Login with VK</button>
+            </form>
         </div>
     </div>
-    </div>
+</div>
 {% endblock %}

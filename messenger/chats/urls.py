@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework import routers
-from chats.views import index, chat_detail, chat_create, chat_list, chat_messages_list
+from chats.views import index, chat_detail, chat_create, chat_list, chat_messages_list, chat_personal_create
 from chats.views import ChatViewSet
 
 
@@ -12,6 +12,7 @@ urlpatterns = [
     path('<int:chat_id>/messages/', chat_messages_list, name='chat_messages_list'),
     path('list/', chat_list, name='chat_list'),
     path('create/', chat_create, name='chat_create'),
+    path('personal_create/', chat_personal_create, name='chat_personal_create'),
 ]
 
 urlpatterns += router.urls
