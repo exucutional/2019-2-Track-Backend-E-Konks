@@ -32,7 +32,6 @@ def user_detail(request, user_id):
     return HttpResponseNotAllowed(['GET'])
 
 @cache_page(60)
-@login_required
 def user_search(request):
     if request.method == 'GET':
         users = User.objects.filter(username__contains=request.GET.get('username'))
