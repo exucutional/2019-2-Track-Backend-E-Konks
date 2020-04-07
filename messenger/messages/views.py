@@ -12,6 +12,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from messages.serializers import MessageSerializer
 from django.views.decorators.cache import cache_page
+from cent import Client
 # Create your views here.
 
 @cache_page(60)
@@ -33,7 +34,6 @@ def message(request, message_id):
             raise Http404
     return HttpResponseNotAllowed(['GET'])
 
-@login_required
 def messages_list(request):
     if request.method == 'GET':
         messages = list(Message.objects.values('id', 'chat_id', 'user_id', 'added_at', 'content'))
@@ -47,6 +47,8 @@ def messages_list(request):
         return response
     return HttpResponseNotAllowed(['GET'])
 
+def send_new_message_event(message):
+    CentrifugeClient.publish(message)
 
 def send_new_message_event():
     send_event('test', 'message', {'event': 'new message'})
@@ -58,7 +60,7 @@ def message_create(request):
         form = MessagePostForm(request.POST)
         if form.is_valid():
             message = form.save()
-            send_new_message_event()
+            send_new_message_event(message)
             return JsonResponse({
                 'msg': 'Сообщение сохранено',
                 'id': message.id
@@ -70,3 +72,23 @@ class MessageViewSet(ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     permission_classes = [IsAuthenticated]
+
+class CentrifugeClient:
+    url = 'http://localhost:8001'
+    api_key = 'f420f296-4c19-4b42-891c-9f861685b754'
+    channel = "chats:centrifuge"
+    client = Client(url, api_key, timeout=1)
+
+    @classmethod
+    def publish(cls, message):
+        user = User.objects.get(id = message.user_id)
+        data = {
+            "status": "ok",
+            "message": {
+                'id': message.id,
+                'user_id': message.user_id,
+                'username': user.username,
+                'content': message.content,
+            }
+        }
+        cls.client.publish(cls.channel, data)
