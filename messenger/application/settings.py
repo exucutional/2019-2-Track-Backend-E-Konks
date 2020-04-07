@@ -58,7 +58,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -203,6 +202,13 @@ SOCIAL_AUTH_VK_OAUTH2_SCOPE = [
     'email'
 ]
 
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'konks.em@phystech.edu'
+EMAIL_HOST_PASSWORD = 'mksrvuqvsityuxpm'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
@@ -213,6 +219,12 @@ STATICFILES_DIRS = [
 ] 
 
 MEDIA_URL = '/media/'
+
+CELERY_BROKER_URL = 'redis://localhost:6379'  
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'  
+CELERY_ACCEPT_CONTENT = ['application/json']  
+CELERY_RESULT_SERIALIZER = 'json'  
+CELERY_TASK_SERIALIZER = 'json' 
 
 try: 
     from .local_settings import * 

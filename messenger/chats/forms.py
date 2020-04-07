@@ -1,5 +1,6 @@
 from django import forms
 from chats.models import Chat
+from chats.models import Member
 from messages.models import Message
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox

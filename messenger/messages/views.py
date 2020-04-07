@@ -5,7 +5,7 @@ from django.http import Http404
 from messages.models import Message
 from users.models import User
 from messages.forms import MessagePostForm
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
 from django_eventstream import send_event
 from rest_framework.viewsets import ModelViewSet
@@ -52,7 +52,7 @@ def send_new_message_event():
     send_event('test', 'message', {'event': 'new message'})
 
 @login_required
-@csrf_exempt
+@csrf_protect
 def message_create(request):
     if request.method == 'POST':
         form = MessagePostForm(request.POST)
