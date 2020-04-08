@@ -1,0 +1,11 @@
+version: "2"
+services:
+  server:
+    image: exucutional/translator
+    command: python server.py
+    ports:
+      - "8090:8090"
+    volumes:
+      - .:/code
+  memcached:
+    image: memcached
