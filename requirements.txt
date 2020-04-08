@@ -74,6 +74,7 @@ PyJWT==1.7.1
 pylint==2.4.3
 pylint-django==2.0.12
 pylint-plugin-utils==0.6
+pymemcache==3.0.1
 pyOpenSSL==19.1.0
 pyparsing==2.4.2
 pytest==5.1.3
