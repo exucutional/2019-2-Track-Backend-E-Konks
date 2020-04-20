@@ -29,7 +29,7 @@ NOCAPTCHA = True
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['backend']
 
 
 # Application definition
@@ -109,13 +109,20 @@ DATABASES = {
 '''
 
 DATABASES = {
-    'default': {
+    'local': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'chat_db',
         'USER': 'chat',
         'PASSWORD': '123',  
         'HOST': '127.0.0.1',
         'PORT': '5432',
+    },
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'messenger',
+        'USER': 'chat',
+        'PASSWORD': 'kem102030',
+        'HOST': '95.163.208.171'
     }
 }
 
