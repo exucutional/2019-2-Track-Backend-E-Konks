@@ -1,0 +1,18 @@
+version: "2"
+services:
+  server:
+    image: exucutional/messenger-backend
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/code
+  memcached:
+    image: memcached
+  centrifugo:
+    image: centrifugo/centrifugo
+    command: centrifugo -c config.json
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./config.json:/centrifugo/config.json

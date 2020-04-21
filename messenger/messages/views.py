@@ -50,11 +50,9 @@ def messages_list(request):
 def send_new_message_event(message):
     CentrifugeClient.publish(message)
 
-def send_new_message_event():
-    send_event('test', 'message', {'event': 'new message'})
+# def send_new_message_event():
+#     send_event('test', 'message', {'event': 'new message'})
 
-@login_required
-@csrf_protect
 def message_create(request):
     if request.method == 'POST':
         form = MessagePostForm(request.POST)
@@ -65,6 +63,7 @@ def message_create(request):
                 'msg': 'Сообщение сохранено',
                 'id': message.id
             })
+
         return JsonResponse({'errors': form.errors}, status=400)
     return HttpResponseNotAllowed(['POST'])
 
@@ -74,7 +73,7 @@ class MessageViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 class CentrifugeClient:
-    url = 'http://localhost:8001'
+    url = 'http://centrifugo:8000'
     api_key = 'f420f296-4c19-4b42-891c-9f861685b754'
     channel = "chats:centrifuge"
     client = Client(url, api_key, timeout=1)

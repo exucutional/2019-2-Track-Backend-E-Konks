@@ -1,0 +1,17 @@
+{
+  "token_hmac_secret_key": "0cb68ea3-4ce2-4fa9-8545-42d9483cc8f8",
+  "admin_password": "738a0a7c-c5ff-4578-a2d2-7331a83e65cc",
+  "admin_secret": "1ccffcb1-10e8-4cff-8ffb-e9cde8165b53",
+  "api_key": "f420f296-4c19-4b42-891c-9f861685b754",
+  "client_insecure": true,
+  "namespaces": [
+    {
+      "name": "chats",
+      "publish": true,
+      "anonymous": true,
+      "history_size": 10,
+      "history_lifetime": 300,
+      "history_recover": true
+    }
+  ]
+}

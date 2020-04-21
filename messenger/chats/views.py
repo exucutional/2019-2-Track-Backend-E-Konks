@@ -38,7 +38,7 @@ def home(request):
 
 
 @cache_page(60)
-@login_required
+@csrf_protect
 def chat_detail(request, chat_id):
     if request.method == 'GET':
         try:
@@ -53,10 +53,19 @@ def chat_detail(request, chat_id):
 
 
 @cache_page(60)
-@login_required
 def chat_list(request):
     if request.method == 'GET':
-        chats = Chat.objects.all().values('id', 'topic')
+        chats = []
+        for chat in Chat.objects.all():
+            resp_chat = {
+                'id': chat.id,
+                'name': chat.topic,
+            }
+            if chat.last_message:
+                resp_chat['time'] = chat.last_message.added_at
+                resp_chat['message'] = chat.last_message.content
+            chats.append(resp_chat)
+
         return JsonResponse({'chats': list(chats)})
     return HttpResponseNotAllowed(['GET'])
 
