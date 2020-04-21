@@ -29,7 +29,7 @@ NOCAPTCHA = True
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['backend']
+ALLOWED_HOSTS = ['backend', 'localhost']
 
 
 # Application definition
@@ -152,9 +152,8 @@ AUTHENTICATION_BACKENDS = [
 
 CACHES = {
     'default': {
-        'BACKEND':
-'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': 'memcached:11211',
     }
 }
 

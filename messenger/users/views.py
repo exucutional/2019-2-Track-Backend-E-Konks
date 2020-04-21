@@ -10,6 +10,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from users.serializers import UserSerializer
 from django.views.decorators.cache import cache_page
+from django.views.decorators.csrf import csrf_protect
 # Create your views here.
 
 @cache_page(60)
@@ -38,6 +39,9 @@ def user_search(request):
         return JsonResponse({
             'data': list(users.values('id', 'first_name', 'last_name', 'username'))
         })
+
+    return HttpResponseNotAllowed(['GET'])
+
 
 
 class UserViewSet(ModelViewSet):
