@@ -30,7 +30,7 @@ django-grip==2.0.2
 django-recaptcha==2.0.6
 django-storages==1.8
 django-widget-tweaks==1.4.8
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 docutils==0.15.2
 factory-boy==2.12.0
 Faker==4.0.0
